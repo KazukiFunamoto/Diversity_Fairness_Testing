@@ -1,0 +1,20 @@
+\begin{tabular}{rr||rr|rr|rr}
+\multicolumn{4}{l}{4. SVM-GERMAN-age} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{}\\
+ &  & \multicolumn{2}{r|}{Before} & \multicolumn{2}{r|}{After} & \multicolumn{2}{r}{Impr. (\%)}\\
+Level & Div. & $\mathrm{IFr}$ & Acc. & $\mathrm{IFr}$ & Acc. & $\mathrm{IFr}$ & Acc.\\
+\hline
+1 & 1.25 & \multirow{11}{*}{2.18} & \multirow{11}{*}{71.37} & 1.66 & 71.55 & 23.78 & 0.257\\
+10 & 4.02 &  &  & 1.40 & 71.70 & 36.02 & 0.467\\
+20 & 5.49 &  &  & 1.36 & 71.62 & 37.92 & 0.350\\
+30 & 6.19 &  &  & 1.22 & 71.68 & 43.99 & 0.444\\
+40 & 6.56 &  &  & 1.24 & 71.85 & 43.15 & 0.677\\
+50 & 6.80 &  &  & 1.27 & 71.78 & 42.05 & 0.584\\
+60 & 7.09 &  &  & 1.12 & 71.60 & 48.49 & 0.327\\
+70 & 7.27 &  &  & 1.21 & 71.80 & 44.50 & 0.607\\
+80 & 7.43 &  &  & 1.10 & 71.58 & 49.59 & 0.304\\
+90 & 7.51 &  &  & 1.20 & 71.83 & 44.98 & 0.654\\
+100 & 7.77 &  &  & 1.17 & 71.35 & 46.22 & -0.023\\
+\hline
+\multicolumn{2}{r}{Fairness ($\mathrm{IFr}$)} & PCC: & \multicolumn{1}{r}{0.96} & p-value:  & \multicolumn{1}{r}{3.2e-06} & Slope:  & 3.56\\
+\multicolumn{2}{r}{Accuracy} & PCC: & \multicolumn{1}{r}{0.13} & p-value:  & \multicolumn{1}{r}{7.0e-01} & Slope:  & 0.01\\
+\end{tabular}

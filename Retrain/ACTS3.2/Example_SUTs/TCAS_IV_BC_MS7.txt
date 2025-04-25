@@ -1,0 +1,35 @@
+[System]
+-- specify system name
+Name: TCAS_IV_BC_MS7
+
+[Parameter]
+-- general syntax is parameter_name : value1, value2, ...
+p0 (int) : [0], 1 ; -1
+p1 (int) : [0], 1
+p2 (int) : [0], 1
+p3 (int) : 0, [1]
+p4 (int) : 0, [1]
+p5 (int) : 0, [1]
+p6 (int) : 0, [1]
+p7 (int) : [0], 1, [2]
+p8 (int) : 0, [1], [2]
+p9 (int) : 0, 1, 2, [3] ; -1
+p10 (int) : [0], [1], 2, 3, 4, 5, 6, 7, 8, 9
+p11 (int) : [0], [1], [2], 3, 4, 5, 6, 7, 8, 9
+
+[Relation]
+-- this section is optional
+-- general format Rx : (p1, p2, ..., pk, Strength)
+R1 : (p0, p9, p10, 3)
+R2 : (p0, p3, p6, p7, p9, p10, 3)
+R3 : (p9, p10, 2)
+R4 : (p9, 1)
+R5 : (p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, 7)
+R6 : (p3, p4, p5, p6, p7, 3)
+
+[Constraint]
+-- this section is also optional
+!(p3 = 0 && p6 = 1 )
+!(p7 = 0 && p0 = 0 )
+!(p6 = 0 && p0 = 1 )
+

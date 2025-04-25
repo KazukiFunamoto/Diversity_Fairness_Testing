@@ -1,0 +1,37 @@
+y = 2.835 * x + 50.404 (BANK_age_MLPC)
+y = 9.691 * x + 41.194 (BANK_age_RF)
+y = 11.589 * x + -7.366 (BANK_age_SVM)
+y = 13.596 * x + -21.046 (CENSUS_age_MLPC)
+y = 4.662 * x + 49.178 (CENSUS_age_RF)
+y = 10.207 * x + 4.227 (CENSUS_age_SVM)
+y = -3.329 * x + 67.645 (CENSUS_race_MLPC)
+y = 1.307 * x + 75.728 (CENSUS_race_RF)
+y = 8.284 * x + -2.580 (CENSUS_race_SVM)
+y = -1.584 * x + -42.172 (CENSUS_sex_MLPC)
+y = 7.130 * x + 43.420 (CENSUS_sex_RF)
+y = 27.846 * x + -37.143 (CENSUS_sex_SVM)
+y = 1.540 * x + 25.355 (GERMAN_age_MLPC)
+y = 2.179 * x + 22.163 (GERMAN_age_RF)
+y = 3.564 * x + 20.053 (GERMAN_age_SVM)
+y = 3.285 * x + 19.180 (GERMAN_sex_MLPC)
+y = 2.300 * x + 50.815 (GERMAN_sex_RF)
+y = 5.934 * x + 17.829 (GERMAN_sex_SVM)
+
+all slope mean: 6.169
+positive correlation (p < 0.05): mean = 8.523
+  - BANK_age_MLPC: 2.835
+  - BANK_age_RF: 9.691
+  - BANK_age_SVM: 11.589
+  - CENSUS_age_MLPC: 13.596
+  - CENSUS_age_RF: 4.662
+  - CENSUS_age_SVM: 10.207
+  - CENSUS_race_SVM: 8.284
+  - CENSUS_sex_RF: 7.130
+  - CENSUS_sex_SVM: 27.846
+  - GERMAN_age_RF: 2.179
+  - GERMAN_age_SVM: 3.564
+  - GERMAN_sex_MLPC: 3.285
+  - GERMAN_sex_SVM: 5.934
+
+negative correlation (p < 0.05): mean = -3.329
+  - CENSUS_race_MLPC: -3.329

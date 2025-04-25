@@ -1,0 +1,20 @@
+\begin{tabular}{rr||rr|rr|rr}
+\multicolumn{4}{l}{4. SVM-GERMAN-sex} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{}\\
+ &  & \multicolumn{2}{r|}{Before} & \multicolumn{2}{r|}{After} & \multicolumn{2}{r}{Impr. (\%)}\\
+Level & Div. & $\mathrm{IFr}$ & Acc. & $\mathrm{IFr}$ & Acc. & $\mathrm{IFr}$ & Acc.\\
+\hline
+1 & 1.62 & \multirow{11}{*}{0.17} & \multirow{11}{*}{71.58} & 0.11 & 71.22 & 32.37 & -0.512\\
+10 & 3.54 &  &  & 0.11 & 71.15 & 37.62 & -0.605\\
+20 & 3.97 &  &  & 0.10 & 70.83 & 40.57 & -1.048\\
+30 & 4.21 &  &  & 0.10 & 70.78 & 42.34 & -1.118\\
+40 & 5.01 &  &  & 0.10 & 70.70 & 41.85 & -1.234\\
+50 & 5.77 &  &  & 0.09 & 70.67 & 49.31 & -1.281\\
+60 & 6.04 &  &  & 0.08 & 70.60 & 52.90 & -1.374\\
+70 & 6.46 &  &  & 0.08 & 70.57 & 53.39 & -1.420\\
+80 & 6.76 &  &  & 0.07 & 70.70 & 59.72 & -1.234\\
+90 & 6.95 &  &  & 0.07 & 70.62 & 61.69 & -1.350\\
+100 & 7.38 &  &  & 0.06 & 70.58 & 66.90 & -1.397\\
+\hline
+\multicolumn{2}{r}{Fairness ($\mathrm{IFr}$)} & PCC: & \multicolumn{1}{r}{0.95} & p-value:  & \multicolumn{1}{r}{6.5e-06} & Slope:  & 5.93\\
+\multicolumn{2}{r}{Accuracy} & PCC: & \multicolumn{1}{r}{-0.90} & p-value:  & \multicolumn{1}{r}{1.3e-04} & Slope:  & -0.16\\
+\end{tabular}

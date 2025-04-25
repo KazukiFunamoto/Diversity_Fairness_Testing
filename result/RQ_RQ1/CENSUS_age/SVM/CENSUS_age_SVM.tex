@@ -1,0 +1,20 @@
+\begin{tabular}{rr||rr|rr|rr}
+\multicolumn{4}{l}{4. SVM-CENSUS-age} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{}\\
+ &  & \multicolumn{2}{r|}{Before} & \multicolumn{2}{r|}{After} & \multicolumn{2}{r}{Impr. (\%)}\\
+Level & Div. & $\mathrm{IFr}$ & Acc. & $\mathrm{IFr}$ & Acc. & $\mathrm{IFr}$ & Acc.\\
+\hline
+1 & 1.11 & \multirow{11}{*}{2.06} & \multirow{11}{*}{81.92} & 1.71 & 81.92 & 16.67 & 0.006\\
+10 & 1.94 &  &  & 1.59 & 81.92 & 22.69 & -0.006\\
+20 & 2.47 &  &  & 1.42 & 81.91 & 31.01 & -0.014\\
+30 & 2.82 &  &  & 1.38 & 81.91 & 32.81 & -0.017\\
+40 & 3.13 &  &  & 1.35 & 81.91 & 34.10 & -0.016\\
+50 & 3.29 &  &  & 1.29 & 81.90 & 37.08 & -0.023\\
+60 & 3.41 &  &  & 1.28 & 81.91 & 37.70 & -0.017\\
+70 & 3.53 &  &  & 1.23 & 81.90 & 40.01 & -0.021\\
+80 & 3.63 &  &  & 1.20 & 81.91 & 41.81 & -0.013\\
+90 & 3.73 &  &  & 1.16 & 81.91 & 43.76 & -0.014\\
+100 & 3.87 &  &  & 1.13 & 81.91 & 44.95 & -0.018\\
+\hline
+\multicolumn{2}{r}{Fairness ($\mathrm{IFr}$)} & PCC: & \multicolumn{1}{r}{0.99} & p-value:  & \multicolumn{1}{r}{7.3e-09} & Slope:  & 10.21\\
+\multicolumn{2}{r}{Accuracy} & PCC: & \multicolumn{1}{r}{-0.83} & p-value:  & \multicolumn{1}{r}{1.4e-03} & Slope:  & -0.01\\
+\end{tabular}

@@ -1,0 +1,29 @@
+correlation:0.375, p-value:2.56e-01 (BANK_age_MLPC)
+correlation:-0.733, p-value:1.02e-02 (BANK_age_RF)
+correlation:-0.769, p-value:5.63e-03 (BANK_age_SVM)
+correlation:0.694, p-value:1.79e-02 (CENSUS_age_MLPC)
+correlation:0.031, p-value:9.29e-01 (CENSUS_age_RF)
+correlation:-0.834, p-value:1.43e-03 (CENSUS_age_SVM)
+correlation:-0.197, p-value:5.61e-01 (CENSUS_race_MLPC)
+correlation:-0.129, p-value:7.06e-01 (CENSUS_race_RF)
+correlation:0.115, p-value:7.36e-01 (CENSUS_race_SVM)
+correlation:-0.387, p-value:2.40e-01 (CENSUS_sex_MLPC)
+correlation:0.423, p-value:1.95e-01 (CENSUS_sex_RF)
+correlation:-0.626, p-value:3.92e-02 (CENSUS_sex_SVM)
+correlation:-0.616, p-value:4.35e-02 (GERMAN_age_MLPC)
+correlation:0.203, p-value:5.50e-01 (GERMAN_age_RF)
+correlation:0.131, p-value:7.02e-01 (GERMAN_age_SVM)
+correlation:0.455, p-value:1.59e-01 (GERMAN_sex_MLPC)
+correlation:-0.475, p-value:1.40e-01 (GERMAN_sex_RF)
+correlation:-0.905, p-value:1.31e-04 (GERMAN_sex_SVM)
+
+positive correlation (p < 0.05): mean = 0.694
+  - CENSUS_age_MLPC: 0.694
+
+negative correlation (p < 0.05): mean = -0.747
+  - BANK_age_RF: -0.733
+  - BANK_age_SVM: -0.769
+  - CENSUS_age_SVM: -0.834
+  - CENSUS_sex_SVM: -0.626
+  - GERMAN_age_MLPC: -0.616
+  - GERMAN_sex_SVM: -0.905

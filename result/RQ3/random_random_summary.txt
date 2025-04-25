@@ -1,0 +1,21 @@
+Accuracy Improvement: -0.072, Fairness Improvement: 28.410 (BANK_age_MLPC_10000_evaluation.txt)
+Accuracy Improvement: -0.079, Fairness Improvement: -31.535 (BANK_age_RF_1000_evaluation.txt)
+Accuracy Improvement: -0.009, Fairness Improvement: -374.843 (BANK_age_SVM_10000_evaluation.txt)
+Accuracy Improvement: -0.218, Fairness Improvement: 57.150 (CENSUS_age_MLPC_1000_evaluation.txt)
+Accuracy Improvement: 0.094, Fairness Improvement: -7.307 (CENSUS_age_RF_1000_evaluation.txt)
+Accuracy Improvement: -0.019, Fairness Improvement: -141.677 (CENSUS_age_SVM_1000_evaluation.txt)
+Accuracy Improvement: -0.316, Fairness Improvement: 14.791 (CENSUS_race_MLPC_10000_evaluation.txt)
+Accuracy Improvement: -0.173, Fairness Improvement: 14.799 (CENSUS_race_RF_1000_evaluation.txt)
+Accuracy Improvement: 0.004, Fairness Improvement: -204.607 (CENSUS_race_SVM_10000_evaluation.txt)
+Accuracy Improvement: -0.221, Fairness Improvement: -1.249 (CENSUS_sex_MLPC_10000_evaluation.txt)
+Accuracy Improvement: -0.144, Fairness Improvement: 20.681 (CENSUS_sex_RF_1000_evaluation.txt)
+Accuracy Improvement: -0.013, Fairness Improvement: 14.100 (CENSUS_sex_SVM_100000_evaluation.txt)
+Accuracy Improvement: -0.749, Fairness Improvement: 35.989 (GERMAN_age_MLPC_1000_evaluation.txt)
+Accuracy Improvement: -1.915, Fairness Improvement: -18.821 (GERMAN_age_RF_1000_evaluation.txt)
+Accuracy Improvement: 0.164, Fairness Improvement: -46.008 (GERMAN_age_SVM_1000_evaluation.txt)
+Accuracy Improvement: -0.283, Fairness Improvement: 13.253 (GERMAN_sex_MLPC_1000_evaluation.txt)
+Accuracy Improvement: -1.016, Fairness Improvement: -25.787 (GERMAN_sex_RF_1000_evaluation.txt)
+Accuracy Improvement: -0.070, Fairness Improvement: 3.831 (GERMAN_sex_SVM_10000_evaluation.txt)
+
+Average Accuracy Improvement: -0.280
+Average Fairness Improvement: -36.046
