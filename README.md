@@ -1,81 +1,24 @@
-# RSUTT
+# Diversity_Fairness_Testing
 
-# Execution Environment
+This repository contains the code, datasets, and experimental results for the paper *"Is Diversity a Meaningful Metric in Fairness Testing?"*.  
+The repository is organized as follows:
 
-programming language
+- `all_results/`: Contains the results of all experiments, covering RQ, RQ1, RQ2, and RQ3.
+- `fairness_testings/`: Contains scripts and folders for executing fairness testing algorithms (RSUTT, AFT, THEMIS), detecting discriminatory data, and measuring their diversity.
+- `retraining/`: Contains scripts and folders for retraining experiments to investigate how IDI diversity affects fairness improvement and accuracy degradation, as well as to compare different retraining methods.
 
-* Python : 2.7.18
+The experiments were conducted using **Python 2.7.18**.  
+However, **AFT** and **THEMIS** require **Python 3.8.10**, with different dependencies, which are explained in `fairness_testings/README.md`.
 
-expansion module
+The general dependencies are listed in `requirements.txt`.  
+You can install them by running:
 
-* numpy : 1.14.5
-* pandas : 0.24.2
-* scipy : 1.1.0
-* scikit-learn : 0.19.0
+```
+pip install -r requirements.txt
+```
 
-The authors used Pycharm CE 2022.2.3 as the development IDE.
+The file `add_gitkeep_to_empty_dirs.py` was created to allow empty directories (such as `fairness_testings/distance_results/`, `retraining/diversity_retrain_results/`, and `retraining/retrain_methods_results/`) to be committed to Git.  
+This file is only for that purpose and can be ignored.
 
-# Scikit-Learn Classifiers
-
-* Decision Tree(DT)
-* MLPC
-* Random Forest(RF)
-
-Each of the following three directories contains the following
-
-It is in the "classifier" directory.
-
-* Adult (Census Income) : Scikit-Learn classifiers in the "census" directory
-* Statlog (German Credit)：Scikit-Learn classifiers in the "german" directory
-* Bank Marketing : Scikit-Learn classifiers in the "bank" directory
-
-# Config 
-
-It is in the "config" directory.
-
-* Adult (Census Income) : config_census.py
-* Statlog(German Credit)：config_german.py
-* Bank Marketing : config_bank.py
-
-The config files has the following data (same as the Udeshi's codes) : 
-
-* params : The number of parameters in the data
-* sensitive_param : The parameter under test
-* input_bounds : The bounds of each parameter
-* classifier_name : Pickled scikit-learn classifier under test (only applicable to the sklearn files)
-* threshold : Discrimination threshold
-* perturbation_unit : By what unit would the user like to perturb the input in the local search
-* retraining_inputs : Inputs to be used for the retraining
-
-# Demo
-
-`python RSUTT.py <algorithm> <classifier> <dataset> <N>`
-
-first parameter : algorithm
-
-* AEQUITAS 
-* KOSEI 
-* CGFT 
-* RSUTT
-
-second parameter : classifier
-
-* DT 
-* MLPC 
-* RF
-
-third parameter : dataset
-
-* CENSUS
-* GERMAN
-* BANK
-
-fourth parameter : N
-
-N is global_iteration_limit.
-
-
-# iteration
-We set the default iteration limits in the following:
-global_iteration_limit = N
-local_iteration_limit = 2000
+Each major folder (`all_results/`, `fairness_testings/`, and `retraining/`) contains its own `README.md` file.
+Please refer to the corresponding `README.md` in each folder for more information.
