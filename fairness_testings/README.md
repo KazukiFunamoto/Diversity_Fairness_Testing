@@ -45,6 +45,30 @@ Each combination of dataset/protected attribute and model is tested, leading to 
 This script executes all tasks 30 times each.  
 The corresponding results are stored in `all_results/RQ2/rsutt/`.
 
+**Notes on RSUTT Parameter Setting:**  
+RSUTT includes a hyperparameter \(N\) that controls the number of global search iterations.  To ensure that the number of detected IDIs exceeds the size of the training dataset for every task, we automatically configure \(N\) based on the dataset, protected attribute, and model. The assigned values of \(N\) for each of the 18 scenarios are as follows:
+
+| Dataset-Attribute | Model | N |
+|:-------------------|:------|:--|
+| CENSUS_age         | SVM   | 1000 |
+| CENSUS_age         | MLPC  | 1000 |
+| CENSUS_age         | RF    | 1000 |
+| CENSUS_race        | SVM   | 10000 |
+| CENSUS_race        | MLPC  | 10000 |
+| CENSUS_race        | RF    | 1000 |
+| CENSUS_sex         | SVM   | 100000 |
+| CENSUS_sex         | MLPC  | 10000 |
+| CENSUS_sex         | RF    | 1000 |
+| BANK_age           | SVM   | 10000 |
+| BANK_age           | MLPC  | 10000 |
+| BANK_age           | RF    | 1000 |
+| GERMAN_age         | SVM   | 1000 |
+| GERMAN_age         | MLPC  | 1000 |
+| GERMAN_age         | RF    | 1000 |
+| GERMAN_sex         | SVM   | 10000 |
+| GERMAN_sex         | MLPC  | 1000 |
+| GERMAN_sex         | RF    | 1000 |
+
 ---
 
 ### AFT and THEMIS
