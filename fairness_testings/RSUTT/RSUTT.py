@@ -13,18 +13,36 @@ import copy
 from CT import generateCTFiles
 from sklearn.externals import joblib
 from sklearn.model_selection import train_test_split
-sys.path.insert(0, './fair_classification/')    # the code for fair classification is in this directory
+sys.path.insert(0, './fair_classification/')    
 
 random.seed(time.time())
 algorithm = sys.argv[1]
 dataset, sensitive_name = sys.argv[2].split("_")
 classifier = sys.argv[3]
-N = int(sys.argv[4])
-repeat_times = int(sys.argv[5])
+repeat_times = int(sys.argv[4])
 
 print "start time : " + str(datetime.datetime.now())
 
 # Setting for each Dataset
+
+def decide_N(dataset, protected_attr, model):
+    if dataset == "BANK":
+        return 1000 if model == "RF" else 10000
+    if dataset == "CENSUS":
+        if protected_attr == "age":
+            return 1000
+        elif protected_attr == "race":
+            return 1000 if model == "RF" else 10000
+        elif protected_attr == "sex":
+            return 100000 if model == "SVM" else (10000 if model == "MLPC" else 1000)
+    if dataset == "GERMAN":
+        if protected_attr == "age":
+            return 1000
+        elif protected_attr == "sex":
+            return 10000 if model == "SVM" else 1000
+    raise ValueError("Invalid dataset or protected attribute")
+
+N = decide_N(dataset, sensitive_name, classifier)
 
 if dataset == "CENSUS":
     params = config_census.params
@@ -945,14 +963,14 @@ elif algorithm == "RSUTT":
             else:
                 break
 
-        print "Total evaluated data: " + str(len(tot_inputs))
-        print "Number of seed data: " + str(seedData)
-        print "Number of discriminatory data: " + str(len(disc_inputs_list))
-        print "Percentage of discriminatory data: " + str(float(len(disc_inputs_list)) / float(len(tot_inputs)) * 100)
-        elapsed_time = time.time() - starting_time
-        print "Number of discriminatory data per second: " + str(len(disc_inputs_list) / elapsed_time)
-        print ("Execution_time:{0}".format(elapsed_time) + "[sec]")
-        
+        #print "Total evaluated data: " + str(len(tot_inputs))
+        #print "Number of seed data: " + str(seedData)
+        #print "Number of discriminatory data: " + str(len(disc_inputs_list))
+        #print "Percentage of discriminatory data: " + str(float(len(disc_inputs_list)) / float(len(tot_inputs)) * 100)
+        #elapsed_time = time.time() - starting_time
+        #print "Number of discriminatory data per second: " + str(len(disc_inputs_list) / elapsed_time)
+        #print ("Execution_time:{0}".format(elapsed_time) + "[sec]")
+        #print "Search ended"
         
         if dataset == "CENSUS":
             dataset_name = "Adult"
@@ -969,10 +987,7 @@ elif algorithm == "RSUTT":
             if len(disc_inputs_list) >= 50:
                 disc_inputs_list = random.sample(disc_inputs_list, 50)
         
-        #project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-        #output_dir = os.path.join(project_root, "Distance", "result", algorithm.lower(), "{}-{}".format(dataset_name, sensitive_name), classifier)
         output_dir = "../distance_results/{}/{}/{}".format(algorithm.upper(), "{}-{}".format(dataset_name, sensitive_name), classifier)
-
         
         if not os.path.exists(output_dir):
             print("{}path".format(output_dir))
@@ -983,20 +998,9 @@ elif algorithm == "RSUTT":
             import csv
             csvwriter = csv.writer(csvfile)
             csvwriter.writerows(disc_inputs_list) 
-        """
-        with open("result/" + algorithm + "/" + dataset + "_" + classifier + "_" + str(N) + ".txt", "a") as myfile:
-            myfile.write(str(len(tot_inputs)) + " "
-                        + str(seedData) + " "
-                        + str(len(disc_inputs_list)) + " "
-                        + str(float(len(disc_inputs_list))
-                            / float(len(tot_inputs)) * 100) + " "
-                        + str(len(disc_inputs_list) / elapsed_time) + " "
-                        + "{0}".format(elapsed_time) + " "
-                        + "\n"
-                        )
-        """
-
-        print "Search ended"
+        
+        print("Saving the detected discriminatory instances to: {}".format(disc_file))
+        
         
         # check distance
         
@@ -1021,16 +1025,15 @@ elif algorithm == "RSUTT":
                 pairwisedistance += L1_distance(disc_inputs_list[i], disc_inputs_list[j])
                 count += 1
         pairwisedistance = float(pairwisedistance) / count
-        
-        print(count)
-        print(pairwisedistance)
+
         
         # Save pairwise distance
         pairwise_file = os.path.join(output_dir, "pairwise_distance.txt")
         with open(pairwise_file, 'a') as f: 
             f.write("{} ({}_{}-{}_{}_{}_{})\n".format(pairwisedistance, algorithm, dataset_name, sensitive_name, classifier, N, times))
+        
+        print("Pairwise distance ({:.6f}) saved to: {}".format(pairwisedistance, pairwise_file))
 
 else:
     print "The algorithm name is wrong."
 
-print "end time : " + str(datetime.datetime.now())

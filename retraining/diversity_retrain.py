@@ -21,55 +21,64 @@ from sklearn.ensemble import RandomForestClassifier
 
 
 ###  before retrain  ###
+
 random.seed(time.time())
 dataset, sensitive_name = sys.argv[1].split("_")
 classifier = sys.argv[2]
-N = int(sys.argv[3])
+
+def decide_N(dataset, protected_attr, model):
+    if dataset == "BANK":
+        return 1000 if model == "RF" else 10000
+    if dataset == "CENSUS":
+        if protected_attr == "age":
+            return 1000
+        elif protected_attr == "race":
+            return 1000 if model == "RF" else 10000
+        elif protected_attr == "sex":
+            return 100000 if model == "SVM" else (10000 if model == "MLPC" else 1000)
+    if dataset == "GERMAN":
+        if protected_attr == "age":
+            return 1000
+        elif protected_attr == "sex":
+            return 10000 if model == "SVM" else 1000
+    raise ValueError("Invalid dataset or protected attribute")
+
+N = decide_N(dataset, sensitive_name, classifier)
 
 if dataset == "CENSUS":
-    df = pd.read_csv('classifier/datasets/census.csv')
-    params = config_census.params
-    if sensitive_name == "age":
-        sensitive_param = config_census.sensitive_param_age
-    elif sensitive_name == "race":
-        sensitive_param = config_census.sensitive_param_race
-    elif sensitive_name == "sex":
-        sensitive_param = config_census.sensitive_param_sex
-    else:
-        print "error"
-        sys.exit(1)
-    perturbation_unit = config_census.perturbation_unit
-    threshold = config_census.threshold
-    input_bounds = config_census.input_bounds
-    
+    from config import config_census as config
 elif dataset == "GERMAN":
-    df = pd.read_csv('classifier/datasets/german.csv')
-    params = config_german.params
-    if sensitive_name == "sex":
-        sensitive_param = config_german.sensitive_param_sex
-    elif sensitive_name == "age":
-        sensitive_param = config_german.sensitive_param_age
-    else:
-        print "error"
-        sys.exit(1)
-    perturbation_unit = config_german.perturbation_unit
-    threshold = config_german.threshold
-    input_bounds = config_german.input_bounds
-    
+    from config import config_german as config
+    if sensitive_name not in ["age", "sex"]:
+        raise ValueError("Invalid sensitive name for GERMAN")
 elif dataset == "BANK":
-    df = pd.read_csv('classifier/datasets/bank.csv')
-    params = config_bank.params
-    if sensitive_name == "age":
-        sensitive_param = config_bank.sensitive_param_age
-    else:
-        print "error"
-        sys.exit(1)
-    perturbation_unit = config_bank.perturbation_unit
-    threshold = config_bank.threshold
-    input_bounds = config_bank.input_bounds
+    from config import config_bank as config
+    if sensitive_name != "age":
+        raise ValueError("Invalid sensitive name for BANK")
 else:
-    print "The dataset name is wrong."
+    raise ValueError("Invalid dataset name")
 
+input_bounds = config.input_bounds
+threshold = config.threshold
+perturbation_unit = config.perturbation_unit
+params = config.params
+if sensitive_name == "age":
+    sensitive_param = config.sensitive_param_age
+elif sensitive_name == "race":
+    sensitive_param = config.sensitive_param_race
+elif sensitive_name == "sex":
+    sensitive_param = config.sensitive_param_sex
+else:
+    raise ValueError("Invalid sensitive name")
+
+print("==== Experiment Configuration ====")
+print("Dataset: {}".format(dataset))
+print("Protected Attribute: {}".format(sensitive_name))
+print("Classifier: {}".format(classifier))
+print("==================================")
+
+path = "classifier/datasets/{}.csv".format(dataset.lower())
+df = pd.read_csv(path) 
 data = df.values
 np.random.shuffle(data)
 
@@ -84,7 +93,7 @@ train_Y = train_data[:, -1]
 test_X = test_data[:, :-1]
 test_Y = test_data[:, -1]
 
-   
+"""   
 if classifier == "SVM":
     model = SVC(gamma=0.0025)
 elif classifier == "MLPC":
@@ -106,7 +115,32 @@ elif classifier == "RF":
 else:
     print "The classifier is wrong."
 
+model.fit(train_X,train_Y)
+"""
 
+def get_model(model_type):   
+    if model_type == "SVM":
+        return SVC(gamma=0.0025)
+    elif model_type == "MLPC":
+        return MLPClassifier(hidden_layer_sizes=(100,), activation='relu', solver='adam',
+                            alpha=0.0001, batch_size='auto', learning_rate='constant',
+                            learning_rate_init=0.001, power_t=0.5, max_iter=200,
+                            shuffle=True, random_state=42, tol=0.0001,
+                            verbose=False, warm_start=False, momentum=0.9,
+                            nesterovs_momentum=True, early_stopping=False, validation_fraction=0.1,
+                            beta_1=0.9, beta_2=0.999, epsilon=1e-08)   
+    elif model_type == "RF":
+        return RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
+                                    max_depth=5, max_features='auto', max_leaf_nodes=None,
+                                    min_impurity_decrease=0.0, min_impurity_split=None,
+                                    min_samples_leaf=1, min_samples_split=2,
+                                    min_weight_fraction_leaf=0.0, n_estimators=10, n_jobs=1,
+                                    oob_score=False, random_state=42, verbose=0,
+                                    warm_start=False)
+    else:
+        raise ValueError("Invalid classifier")
+
+model = get_model(classifier)
 model.fit(train_X,train_Y)
 
 def accuracy(model,test_data):
@@ -152,7 +186,7 @@ def evaluate_input(inp,model):
     return (out0!=out1)
 
 def get_estimate_array(model):
-    random.seed(time.time())     #set seed 42 in this func and get_random_input()  (you shouldn't write this code golobally, because you cannot apply seed in def(def))
+    random.seed(time.time())     
     estimate_array = []
     rolling_average = 0.0
     for i in xrange(num_trials):
@@ -166,11 +200,12 @@ def get_estimate_array(model):
         estimate = float(disc_count)/total_count
         rolling_average = ((rolling_average * i) + estimate)/(i + 1)
         estimate_array.append(estimate)
-        #print estimate, rolling_average   #(deleted)   
     return estimate_array
  
 before_fairness = np.mean(get_estimate_array(model))
 
+print("Before retrain - Accuracy: {:.6f}".format(before_accuracy))
+print("Before retrain - Fairness (IFr): {:.6f}".format(before_fairness))
 
 
 ###  RSUTT algorithm
@@ -243,8 +278,6 @@ def my_local_search(inp):
                 global local_cnt
                 local_cnt += 1
 
-
-#print "Search started"
 starting_time = time.time()
 minimizer = {"method": "L-BFGS-B"}
 
@@ -295,7 +328,6 @@ def select_from_ctfile(number_of_inputs):
         # Obtain all test cases from
         test_suite_CT_Extra, _, _, _ = train_test_split(test_suite_base, [0] * len(test_suite_base),
                                                         test_size=len(test_suite_base) - int(number_of_inputs))
-        print len(test_suite_CT_Extra)
         return test_suite_CT_Extra
 
     # Case 2: combine two test suites
@@ -310,10 +342,7 @@ def select_from_ctfile(number_of_inputs):
     set_alpha = set(tuple(a) for a in test_suite_alpha)
 
     setDifference = set_alpha - set_base
-
-    # print "length of the set difference: "+ str(len(setDifference))
     listDifference = list(setDifference)
-
     difference_array = np.array(listDifference)
 
     # Number of inputs to be added
@@ -328,7 +357,6 @@ def select_from_ctfile(number_of_inputs):
     test_suite_CT_Selected = np.append(test_suite_CT_Selected, test_suite_CT_Extra, axis=0)
 
     return test_suite_CT_Selected
-
 
 test_suite_CT_Selected = select_from_ctfile(global_iteration_limit)
 
@@ -345,14 +373,15 @@ for input in disc_inputs_list:
     else:
         break
 
-print "Total evaluated data: " + str(len(tot_inputs))
-print "Number of seed data: " + str(seedData)
-print "Number of discriminatory data: " + str(len(disc_inputs_list))
-print "Percentage of discriminatory data: " + str(float(len(disc_inputs_list)) / float(len(tot_inputs)) * 100)
+#print "Total evaluated data: " + str(len(tot_inputs))
+#print "Number of seed data: " + str(seedData)
+#print "Number of discriminatory data: " + str(len(disc_inputs_list))
+#print "Percentage of discriminatory data: " + str(float(len(disc_inputs_list)) / float(len(tot_inputs)) * 100)
 
 
 ###   retrain   ###
 
+"""
 SVM = SVC(gamma=0.0025)
 
 MLPC = MLPClassifier(hidden_layer_sizes=(100,), activation='relu', solver='adam',
@@ -372,27 +401,40 @@ RF = RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
 SVM.fit(train_X,train_Y)
 MLPC.fit(train_X,train_Y)
 RF.fit(train_X,train_Y)
+"""
+
+def get_pair_list(discs):
+        pair_list = []
+        for disc in discs:
+            disc_0 = [int(i) for i in disc]
+            disc_1 = [int(i) for i in disc]
+            disc_0[sensitive_param - 1] = input_bounds[sensitive_param - 1][0]
+            disc_1[sensitive_param - 1] = input_bounds[sensitive_param - 1][1]
+            pair_list.append(disc_0)
+            pair_list.append(disc_1)
+        return pair_list
 
 
-def majority_voting(inp):
-    
+def majority_voting(inp, models):
     inp = [int(i) for i in inp]
     inp = np.asarray(inp)
     inp = np.reshape(inp, (1, -1))
-    
+    """
     voting = [SVM.predict(inp)[0], MLPC.predict(inp)[0], RF.predict(inp)[0]]
+    """
+    voting = [int(m.predict(inp)[0]) for m in models]
     counts = np.bincount(voting)
     label = np.argmax(counts)
-    
     return label
 
-random.seed(time.time())
-added_num = int(train_data_size * 0.05)
 
-###
+majority_models = [get_model("SVM"), get_model("MLPC"), get_model("RF")]
+for m in majority_models:
+    m.fit(train_X, train_Y)
+
+
 def L1_distance(disc1,disc2):
     distance = 0
-    
     for i in range(len(disc1)):
         difference = abs(disc1[i]-disc2[i])
         if dataset=="CENSUS":
@@ -402,11 +444,12 @@ def L1_distance(disc1,disc2):
         elif dataset=="BANK":
             distance += float(difference)/(config_bank.input_bounds[i][1]- config_bank.input_bounds[i][0])
         else:
-            print "error"
+            print("wrong dataset")
             sys.exit(1)
     return distance
 
-def old_get_discs(DISC,diversity,disc_num):
+
+def get_discs(DISC,diversity,disc_num):
     DISC_copy = copy.deepcopy(DISC)
     discs=[]
     random.seed(time.time())
@@ -436,9 +479,14 @@ def old_get_discs(DISC,diversity,disc_num):
     return discs
 
 
+random.seed(time.time())
+added_num = int(train_data_size * 0.05)
 
-for diversity in ["random",1,10,20,30,40,50,60,70,80,90,100]:
-    
+for diversity in [1,10,20,30,40,50,60,70,80,90,100]:
+    print("==== Diversity Information ====")
+    print("Diversity Level: {} (Max: 100)".format(diversity))
+    print("===============================")
+    """
     if diversity==0:
         added_disc = random.choice(disc_inputs_list) 
         added_disc_list = []
@@ -447,14 +495,18 @@ for diversity in ["random",1,10,20,30,40,50,60,70,80,90,100]:
     elif diversity=="random":
         added_disc_list = random.sample(disc_inputs_list, added_num)
     else:
-        added_disc_list = old_get_discs(disc_inputs_list,diversity,added_num) 
+        added_disc_list = get_discs(disc_inputs_list,diversity,added_num) 
+    """
+    added_disc_list = get_discs(disc_inputs_list,diversity,added_num) 
     
-    ### distance check ###
+    
+    # check distance
+    
     if len(added_disc_list)<=1000:
         disc_num = len(added_disc_list)     
     else:
         disc_num = 1000
-    print "discnum",disc_num
+    
     disc = added_disc_list[0:disc_num]
     distance = 0
     count=0
@@ -464,32 +516,21 @@ for diversity in ["random",1,10,20,30,40,50,60,70,80,90,100]:
             count += 1
     distance = float(distance) / count
 
-
-    def get_pair_list(discs):
-        pair_list = []
-        for disc in discs:
-            disc_0 = [int(i) for i in disc]
-            disc_1 = [int(i) for i in disc]
-            disc_0[sensitive_param - 1] = input_bounds[sensitive_param - 1][0]
-            disc_1[sensitive_param - 1] = input_bounds[sensitive_param - 1][1]
-            pair_list.append(disc_0)
-            pair_list.append(disc_1)
-        return pair_list
-
     added_disc = np.array(get_pair_list(added_disc_list))
     
     added_X = added_disc
     
     added_Y = []
     for disc in added_disc_list:
-        label = majority_voting(disc)
+        label = majority_voting(disc, majority_models)
         added_Y.append(label)
         added_Y.append(label)
     added_Y = np.array(added_Y)
     
-    new_train_X = np.concatenate((train_X, added_X), axis = 0)  #connect
+    new_train_X = np.concatenate((train_X, added_X), axis = 0)  
     new_train_Y = np.concatenate((train_Y, added_Y), axis = 0)
 
+    """
     if classifier == "SVM":
         retrained_model = SVC(gamma=0.0025)
     elif classifier == "MLPC":
@@ -510,19 +551,28 @@ for diversity in ["random",1,10,20,30,40,50,60,70,80,90,100]:
                                     warm_start=False)
     else:
         print "The classifier is wrong."
+        
+    """
 
-    retrained_model.fit(new_train_X,new_train_Y)
-            
+    retrained_model = get_model(classifier)
+    retrained_model.fit(new_train_X,new_train_Y)  
     after_accuracy = accuracy(retrained_model,test_data)
-    
     after_fairness = np.mean(get_estimate_array(retrained_model))
+    
+    print("After retrain - Accuracy: {:.6f}".format(after_accuracy))
+    print("After retrain - Fairness (IFr): {:.6f}".format(after_fairness))
 
-    with open("diversity_retrain_results" + "/" + dataset + "_" + sensitive_name + "/" + classifier + "/" + dataset + "_" + sensitive_name + "_" + classifier + "_" + str(N) + "_" + str(diversity) + ".txt", "a") as myfile:
+    save_path = "diversity_retrain_results/{}_{}/{}/{}_{}_{}_{}_{}.txt".format(
+        dataset, sensitive_name, classifier, dataset, sensitive_name, classifier, str(N), str(diversity)
+    )
+    with open(save_path, "a") as myfile:
         myfile.write(str(len(disc_inputs_list)) + " "
-                        + str(before_accuracy) + " "
-                        + str(before_fairness) + " "
-                        + str(after_accuracy) + " "
-                        + str(after_fairness) + " "
-                        + str(distance) + " "
-                        + "\n"
-                        )
+                    + str(before_accuracy) + " "
+                    + str(before_fairness) + " "
+                    + str(after_accuracy) + " "
+                    + str(after_fairness) + " "
+                    + str(distance) + " "
+                    + "\n"
+                    )
+
+    print("Results saved to: {}\n".format(save_path))

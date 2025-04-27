@@ -14,7 +14,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
-sys.path.insert(0, './fair_classification/')    # the code for fair classification is in this directory
 
 ###  before retrain  ###
 
@@ -29,7 +28,25 @@ mode = sys.argv[1]  # e.g. "all" or one of SCENARIOS
 random.seed(time.time())
 dataset, sensitive_name = sys.argv[2].split("_")
 classifier = sys.argv[3]
-N = int(sys.argv[4])
+
+def decide_N(dataset, protected_attr, model):
+    if dataset == "BANK":
+        return 1000 if model == "RF" else 10000
+    if dataset == "CENSUS":
+        if protected_attr == "age":
+            return 1000
+        elif protected_attr == "race":
+            return 1000 if model == "RF" else 10000
+        elif protected_attr == "sex":
+            return 100000 if model == "SVM" else (10000 if model == "MLPC" else 1000)
+    if dataset == "GERMAN":
+        if protected_attr == "age":
+            return 1000
+        elif protected_attr == "sex":
+            return 10000 if model == "SVM" else 1000
+    raise ValueError("Invalid dataset or protected attribute")
+
+N = decide_N(dataset, sensitive_name, classifier)
 
 if dataset == "CENSUS":
     from config import config_census as config
@@ -57,6 +74,11 @@ elif sensitive_name == "sex":
 else:
     raise ValueError("Invalid sensitive name")
 
+print("==== Experiment Configuration ====")
+print("Dataset: {}".format(dataset))
+print("Protected Attribute: {}".format(sensitive_name))
+print("Classifier: {}".format(classifier))
+print("==================================")
 
 path = "classifier/datasets/{}.csv".format(dataset.lower())
 df = pd.read_csv(path) 
@@ -143,7 +165,7 @@ def evaluate_input(inp,model):
     return (out0!=out1)
 
 def get_estimate_array(model):
-    random.seed(time.time())     #set seed 42 in this func and get_random_input()  (you shouldn't write this code golobally, because you cannot apply seed in def(def))
+    random.seed(time.time())    
     estimate_array = []
     rolling_average = 0.0
     for i in xrange(num_trials):
@@ -156,12 +178,13 @@ def get_estimate_array(model):
 
         estimate = float(disc_count)/total_count
         rolling_average = ((rolling_average * i) + estimate)/(i + 1)
-        estimate_array.append(estimate)
-        #print estimate, rolling_average   #(deleted)   
+        estimate_array.append(estimate) 
     return estimate_array
  
 before_fairness = np.mean(get_estimate_array(model))
 
+print("Before retrain - Accuracy: {:.6f}".format(before_accuracy))
+print("Before retrain - Fairness (IFr): {:.6f}".format(before_fairness))
 
 
 ###  RSUTT algorithm
@@ -234,8 +257,6 @@ def my_local_search(inp):
                 global local_cnt
                 local_cnt += 1
 
-
-#print "Search started"
 starting_time = time.time()
 minimizer = {"method": "L-BFGS-B"}
 
@@ -286,7 +307,6 @@ def select_from_ctfile(number_of_inputs):
         # Obtain all test cases from
         test_suite_CT_Extra, _, _, _ = train_test_split(test_suite_base, [0] * len(test_suite_base),
                                                         test_size=len(test_suite_base) - int(number_of_inputs))
-        print len(test_suite_CT_Extra)
         return test_suite_CT_Extra
 
     # Case 2: combine two test suites
@@ -301,10 +321,7 @@ def select_from_ctfile(number_of_inputs):
     set_alpha = set(tuple(a) for a in test_suite_alpha)
 
     setDifference = set_alpha - set_base
-
-    # print "length of the set difference: "+ str(len(setDifference))
     listDifference = list(setDifference)
-
     difference_array = np.array(listDifference)
 
     # Number of inputs to be added
@@ -319,7 +336,6 @@ def select_from_ctfile(number_of_inputs):
     test_suite_CT_Selected = np.append(test_suite_CT_Selected, test_suite_CT_Extra, axis=0)
 
     return test_suite_CT_Selected
-
 
 test_suite_CT_Selected = select_from_ctfile(global_iteration_limit)
 
@@ -336,15 +352,14 @@ for input in disc_inputs_list:
     else:
         break
 
-print "Total evaluated data: " + str(len(tot_inputs))
-print "Number of seed data: " + str(seedData)
-print "Number of discriminatory data: " + str(len(disc_inputs_list))
-print "Percentage of discriminatory data: " + str(float(len(disc_inputs_list)) / float(len(tot_inputs)) * 100)
+#print "Total evaluated data: " + str(len(tot_inputs))
+#print "Number of seed data: " + str(seedData)
+#print "Number of discriminatory data: " + str(len(disc_inputs_list))
+#print "Percentage of discriminatory data: " + str(float(len(disc_inputs_list)) / float(len(tot_inputs)) * 100)
 
 
 
 ###   retrain   ###
-
 
 def get_pair_list(discs):
     pair_list = []
@@ -372,6 +387,11 @@ for m in majority_models:
     m.fit(train_X, train_Y)
 
 def run_scenario(mode):
+    
+    print("==== Retraining Methods Information ====")
+    print("Selected Method: {}".format(mode))
+    print("===============================")
+    
     base_ratio = 0.05 if mode.startswith("pair") else 0.1
     added_num = int(train_data_size * base_ratio)
     discs = random.sample(disc_inputs_list, added_num)
@@ -417,25 +437,22 @@ def run_scenario(mode):
 
     new_X = np.concatenate((train_X, X), axis=0)
     new_Y = np.concatenate((train_Y, Y), axis=0)
-    
-    debug_dir = "used_disc_data"
-    if not os.path.exists(debug_dir):
-        os.makedirs(debug_dir)
-    debug_path = "{}/{}_{}_{}_{}.csv".format(debug_dir, dataset, sensitive_name, classifier, mode)
-    debug_df = pd.DataFrame(np.hstack((X, np.array(Y).reshape(-1, 1))))
-    debug_df.to_csv(debug_path, index=False, header=False)
-    
+
     retrained_model = get_model(classifier)
     retrained_model.fit(new_X, new_Y)
     after_accuracy = accuracy(retrained_model, test_data)
     after_fairness = np.mean(get_estimate_array(retrained_model))
+    
+    print("After retrain - Accuracy: {:.6f}".format(after_accuracy))
+    print("After retrain - Fairness (IFr): {:.6f}".format(after_fairness))
+
     outdir = "retrain_methods_results/{}".format(mode)
     if not os.path.exists(outdir):
         os.makedirs(outdir)
     outpath = "{}/{}_{}_{}_{}.txt".format(outdir, dataset, sensitive_name, classifier, N)
     with open(outpath, "a") as f:
         f.write("{} {} {} {} {}\n".format(len(disc_inputs_list), before_accuracy, before_fairness, after_accuracy, after_fairness))
-
+    print("Results saved to: {}\n".format(outpath))
 
 if mode == "all":
     for m in SCENARIOS:
@@ -444,3 +461,4 @@ else:
     if mode not in SCENARIOS:
         raise ValueError("Invalid mode")
     run_scenario(mode)
+

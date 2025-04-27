@@ -111,9 +111,11 @@ class Themis:
         elif model == "RanForest":
             model = "RF"
         dataset_and_attr = f"{dataset}-{protected_attr}" 
-        #project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
-        output_dir = f"../../../distance_results/{method.upper()}/{dataset_and_attr}/{model}"
-        #output_dir = os.path.join(project_root, "Distance", "result", method, f"{dataset}-{protected_attr}", model)
+        
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        output_dir = os.path.join(current_dir, "..", "..", "..", "distance_results", method.capitalize(), dataset_and_attr, model)
+        output_dir = os.path.abspath(output_dir)
+
         if not os.path.exists(output_dir):
             print(f"{output_dir}path")
             raise FileNotFoundError
@@ -150,10 +152,9 @@ class Themis:
                 count += 1
         pairwisedistance = float(pairwisedistance) / count
         
-        print(count)
-        print(pairwisedistance)
-        
         # Save pairwise distance
         pairwise_file = os.path.join(output_dir, "pairwise_distance.txt")
         with open(pairwise_file, 'a') as f:
             f.write(f"{pairwisedistance} ({label[0]}-{label[1]})\n")
+            
+        print(f"Pairwise distance ({pairwisedistance:.6f}) saved to: {pairwise_file}")

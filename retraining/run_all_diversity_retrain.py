@@ -2,29 +2,19 @@ import subprocess
 
 execution_times = 30
 
+dataset_protected_pairs = [
+    ("BANK", "age"),
+    ("CENSUS", "age"),
+    ("CENSUS", "race"),
+    ("CENSUS", "sex"),
+    ("GERMAN", "age"),
+    ("GERMAN", "sex"),
+]
+
+models = ["SVM", "MLPC", "RF"]
+
 for i in range(execution_times):
-    subprocess.call("python diversity_retrain.py BANK_age SVM 10000")
-    subprocess.call("python diversity_retrain.py BANK_age MLPC 10000")
-    subprocess.call("python diversity_retrain.py BANK_age RF 1000") 
-    
-    subprocess.call("python diversity_retrain.py CENSUS_age SVM 1000")
-    subprocess.call("python diversity_retrain.py CENSUS_age MLPC 1000")
-    subprocess.call("python diversity_retrain.py CENSUS_age RF 1000") 
-    
-    subprocess.call("python diversity_retrain.py CENSUS_race SVM 10000")
-    subprocess.call("python diversity_retrain.py CENSUS_race MLPC 10000") 
-    subprocess.call("python diversity_retrain.py CENSUS_race RF 1000") 
-    
-    subprocess.call("python diversity_retrain.py CENSUS_sex SVM 100000 ")
-    subprocess.call("python diversity_retrain.py CENSUS_sex MLPC 10000 ")
-    subprocess.call("python diversity_retrain.py CENSUS_sex RF 1000 ") 
-    
-    subprocess.call("python diversity_retrain.py GERMAN_age SVM 1000")
-    subprocess.call("python diversity_retrain.py GERMAN_age MLPC 1000")
-    subprocess.call("python diversity_retrain.py GERMAN_age RF 1000")
-    
-    subprocess.call("python diversity_retrain.py GERMAN_sex SVM 10000") 
-    subprocess.call("python diversity_retrain.py GERMAN_sex MLPC 1000")
-    subprocess.call("python diversity_retrain.py GERMAN_sex RF 1000")
-
-
+    for dataset, attr in dataset_protected_pairs:
+        for model in models:
+            cmd = "python diversity_retrain.py {}_{} {}".format(dataset, attr, model)
+            subprocess.call(cmd, shell=True)
