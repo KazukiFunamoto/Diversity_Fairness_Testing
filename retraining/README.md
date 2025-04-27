@@ -17,10 +17,10 @@ This folder is for running retraining experiments and saving results.
 You can run it by:
 
 ```
-python diversity_retrain.py BANK_age SVM
+python diversity_retrain.py CENSUS_age SVM
 ```
 Arguments:
-- Dataset and protected attribute (e.g., BANK_age)
+- Dataset and protected attribute (e.g., CENSUS_age)
 - Model (e.g., SVM)
 
 The results will be stored under `diversity_retrain_results/`.
@@ -28,10 +28,10 @@ The results will be stored under `diversity_retrain_results/`.
 The tasks are combinations of:
 
 - **Datasets and protected attributes**:
-  - `BANK_age`
   - `CENSUS_age`
   - `CENSUS_race`
   - `CENSUS_sex`
+  - `BANK_age`
   - `GERMAN_age`
   - `GERMAN_sex`
 
@@ -52,7 +52,7 @@ The corresponding results are stored in `all_results/RQ_RQ1/`.
 You can run it by:
 
 ```
-python retrain_methods.py const_const BANK_age SVM
+python retrain_methods.py const_const CENSUS_age SVM
 ```
 Arguments:
 - Retraining method (e.g., const_const, random_majority, etc.)
@@ -62,7 +62,7 @@ Arguments:
 Alternatively, you can specify `all` as the retraining method to compare all 9 retraining methods:
 
 ```
-python retrain_methods.py all BANK_age SVM
+python retrain_methods.py all CENSUS_age SVM
 ```
 
 The results will be stored under `retrain_methods_results/`.
@@ -70,10 +70,10 @@ The results will be stored under `retrain_methods_results/`.
 The tasks are the same combinations as above:
 
 - **Datasets and protected attributes**:
-  - `BANK_age`
   - `CENSUS_age`
   - `CENSUS_race`
   - `CENSUS_sex`
+  - `BANK_age`
   - `GERMAN_age`
   - `GERMAN_sex`
 
