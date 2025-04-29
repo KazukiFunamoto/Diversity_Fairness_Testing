@@ -22,3 +22,10 @@ This file is only for that purpose and can be ignored.
 
 Each major folder (`all_results/`, `fairness_testings/`, and `retraining/`) contains its own `README.md` file.
 Please refer to the corresponding `README.md` in each folder for more information.
+
+## License
+
+This code is licensed under the MIT License.  
+During the double-blind review period, the copyright holder 
+is anonymized as "Anonymous."
+
