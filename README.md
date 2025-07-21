@@ -1,5 +1,19 @@
 # Diversity_Fairness_Testing
 
+## Publication
+
+This repository supports the paper:
+
+**_"Is Diversity a Meaningful Metric in Fairness Testing?"_** 
+
+Kazuki Funamoto (船本 和希) – Keio University  
+Takashi Kitamura (北村 崇師) – National Institute of Advanced Industrial Science and Technology (AIST)  
+Shingo Takada (高田 眞吾) – Keio University  
+ 
+<!-- To appear in the *Proceedings of the International Symposium on Empirical Software Engineering and Measurement (ESEM 2025)*, IEEE/ACM, 2025. -->
+
+## About this repository
+
 This repository contains the code, datasets, and experimental results for the paper *"Is Diversity a Meaningful Metric in Fairness Testing?"*.  
 The repository is organized as follows:
 
@@ -7,8 +21,8 @@ The repository is organized as follows:
 - `fairness_testings/`: Contains scripts and folders for executing fairness testing algorithms (RSUTT, AFT, THEMIS), detecting discriminatory data, and measuring their diversity.
 - `retraining/`: Contains scripts and folders for retraining experiments to investigate how IDI diversity affects fairness improvement and accuracy degradation, as well as to compare different retraining methods.
 
-The experiments were conducted using **Python 2.7.18**.  
-However, **AFT** and **THEMIS** require **Python 3.8.10**, with different dependencies, which are explained in `fairness_testings/README.md`.
+The experiments were conducted using Python 2.7.18.  
+However, AFT and THEMIS require Python 3.8.10, with different dependencies, which are explained in `fairness_testings/README.md`.
 
 The general dependencies are listed in `requirements.txt`.  
 You can install them by running:
@@ -26,6 +40,4 @@ Please refer to the corresponding `README.md` in each folder for more informatio
 ## License
 
 This code is licensed under the MIT License.  
-During the double-blind review period, the copyright holder 
-is anonymized as "Anonymous."
 
