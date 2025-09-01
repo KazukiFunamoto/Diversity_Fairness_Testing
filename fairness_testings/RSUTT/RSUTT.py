@@ -21,7 +21,7 @@ dataset, sensitive_name = sys.argv[2].split("_")
 classifier = sys.argv[3]
 repeat_times = int(sys.argv[4])
 
-print "start time : " + str(datetime.datetime.now())
+print("start time : " + str(datetime.datetime.now()))
 
 # Setting for each Dataset
 
@@ -53,7 +53,7 @@ if dataset == "CENSUS":
     elif sensitive_name == "sex":
         sensitive_param = config_census.sensitive_param_sex
     else:
-        print "error"
+        print("error")
         sys.exit(1)
     perturbation_unit = config_census.perturbation_unit
     threshold = config_census.threshold
@@ -66,7 +66,7 @@ if dataset == "CENSUS":
     elif classifier == "RF":
         classifier_name = 'classifier/census/RF_CENSUS.pkl'
     else:
-        print "The classifier is wrong."
+        print("The classifier is wrong.")
 
 elif dataset == "GERMAN":
     params = config_german.params
@@ -75,7 +75,7 @@ elif dataset == "GERMAN":
     elif sensitive_name == "age":
         sensitive_param = config_german.sensitive_param_age
     else:
-        print "error"
+        print("error")
         sys.exit(1)
     perturbation_unit = config_german.perturbation_unit
     threshold = config_german.threshold
@@ -88,14 +88,14 @@ elif dataset == "GERMAN":
     elif classifier == "RF":
         classifier_name = 'classifier/german/RF_GERMAN.pkl'
     else:
-        print "The classifier is wrong."
+        print("The classifier is wrong.")
 
 elif dataset == "BANK":
     params = config_bank.params
     if sensitive_name == "age":
         sensitive_param = config_bank.sensitive_param_age
     else:
-        print "error"
+        print("error")
         sys.exit(1)
     perturbation_unit = config_bank.perturbation_unit
     threshold = config_bank.threshold
@@ -108,10 +108,10 @@ elif dataset == "BANK":
     elif classifier == "RF":
         classifier_name = 'classifier/bank/RF_BANK.pkl'
     else:
-        print "The classifier is wrong."
+        print("The classifier is wrong.")
 
 else:
-    print "The dataset name is wrong."
+    print("The dataset name is wrong.")
 
 # Aequitas algorithm
 
@@ -275,7 +275,7 @@ if algorithm == "AEQUITAS":
         # following optimization function gives better results
         return abs(out1 + out0)
 
-    print "Search started"
+    print("Search started")
     starting_time = time.time()
     if dataset == "CENSUS":
         initial_input = [7, 4, 26, 1, 4, 4, 0, 0, 0, 1, 5, 73, 1]
@@ -297,14 +297,14 @@ if algorithm == "AEQUITAS":
         basinhopping(evaluate_local, input, stepsize=1.0, take_step=local_perturbation, minimizer_kwargs=minimizer,
                      niter=local_iteration_limit)
 
-    print "Total evaluated data: " + str(len(tot_inputs))
-    print "Number of seed data: " + str(seedData)
-    print "Number of discriminatory data: " + str(len(global_disc_inputs_list) + len(local_disc_inputs_list))
-    print "Percentage of discriminatory data: " + str(float(len(global_disc_inputs_list) + len(local_disc_inputs_list)) 
-                                                      / float(len(tot_inputs)) * 100)
+    print("Total evaluated data: " + str(len(tot_inputs)))
+    print("Number of seed data: " + str(seedData))
+    print("Number of discriminatory data: " + str(len(global_disc_inputs_list) + len(local_disc_inputs_list)))
+    print("Percentage of discriminatory data: " + str(float(len(global_disc_inputs_list) + len(local_disc_inputs_list)) 
+                                                      / float(len(tot_inputs)) * 100))
     elapsed_time = time.time() - starting_time
-    print "Number of discriminatory data per second: " \
-          + str((len(global_disc_inputs_list) + len(local_disc_inputs_list)) / elapsed_time)
+    print("Number of discriminatory data per second: " \
+          + str((len(global_disc_inputs_list) + len(local_disc_inputs_list)) / elapsed_time))
     print ("Execution_time: {0}".format(elapsed_time) + "[sec]")
 
     with open("result/" + algorithm + "/" + dataset + "_" + classifier + "_" + str(N) + ".txt", "a") as myfile:
@@ -318,7 +318,7 @@ if algorithm == "AEQUITAS":
                      + "\n"
                      )
 
-    print "Search ended"
+    print("Search ended")
 
 # KOSEI algorithm
 
@@ -424,7 +424,7 @@ elif algorithm == "KOSEI":
                 local_cnt += 1
 
 
-    print "Search started"
+    print("Search started")
     starting_time = time.time()
     if dataset == "CENSUS":
         initial_input = [7, 4, 26, 1, 4, 4, 0, 0, 0, 1, 5, 73, 1]
@@ -454,13 +454,13 @@ elif algorithm == "KOSEI":
         else:
             break
 
-    print "Total evaluated data: " + str(len(tot_inputs))
-    print "Number of seed data: " + str(seedData)
-    print "Number of discriminatory data: " + str(len(disc_inputs_list))
-    print "Percentage of discriminatory data: " + str(float(len(disc_inputs_list)) / float(len(tot_inputs)) * 100)
+    print("Total evaluated data: " + str(len(tot_inputs)))
+    print("Number of seed data: " + str(seedData))
+    print("Number of discriminatory data: " + str(len(disc_inputs_list)))
+    print("Percentage of discriminatory data: " + str(float(len(disc_inputs_list)) / float(len(tot_inputs)) * 100))
     elapsed_time = time.time() - starting_time
-    print "Number of discriminatory data per second: " + str(len(disc_inputs_list) / elapsed_time)
-    print ("Execution_time:{0}".format(elapsed_time) + "[sec]")
+    print("Number of discriminatory data per second: " + str(len(disc_inputs_list) / elapsed_time))
+    print("Execution_time:{0}".format(elapsed_time) + "[sec]")
 
     with open("result/" + algorithm + "/" + dataset + "_" + classifier + "_" + str(N) + ".txt", "a") as myfile:
         myfile.write(str(len(tot_inputs)) + " "
@@ -473,7 +473,7 @@ elif algorithm == "KOSEI":
                      + "\n"
                      )
 
-    print "Search ended"
+    print("Search ended")
 
 # CGFT algorithm
 
@@ -638,7 +638,7 @@ elif algorithm == "CGFT":
         return abs(out1 + out0)
 
 
-    print "Search started"
+    print("Search started")
     starting_time = time.time()
     if dataset == "CENSUS":
         initial_input = [7, 4, 26, 1, 4, 4, 0, 0, 0, 1, 5, 73, 1]
@@ -697,7 +697,7 @@ elif algorithm == "CGFT":
             # Obtain all test cases from
             test_suite_CT_Extra, _, _, _ = train_test_split(test_suite_base, [0] * len(test_suite_base),
                                                             test_size=len(test_suite_base) - int(number_of_inputs))
-            print len(test_suite_CT_Extra)
+            print(len(test_suite_CT_Extra))
             return test_suite_CT_Extra
 
         # Case 2: combine two test suites
@@ -743,15 +743,15 @@ elif algorithm == "CGFT":
         basinhopping(evaluate_local, input, stepsize=1.0, take_step=local_perturbation, minimizer_kwargs=minimizer,
                      niter=local_iteration_limit)
 
-    print "Total evaluated data: " + str(len(tot_inputs))
-    print "Number of seed data: " + str(seedData)
-    print "Number of discriminatory data: " + str(len(global_disc_inputs_list) + len(local_disc_inputs_list))
-    print "Percentage of discriminatory data: " + str(float(len(global_disc_inputs_list) + len(local_disc_inputs_list))
+    print("Total evaluated data: " + str(len(tot_inputs)))
+    print("Number of seed data: " + str(seedData))
+    print("Number of discriminatory data: " + str(len(global_disc_inputs_list) + len(local_disc_inputs_list)))
+    print("Percentage of discriminatory data: " + str(float(len(global_disc_inputs_list) + len(local_disc_inputs_list)))
                                                       / float(len(tot_inputs)) * 100)
     elapsed_time = time.time() - starting_time
-    print "Number of discriminatory data per second: " \
-          + str((len(global_disc_inputs_list) + len(local_disc_inputs_list)) / elapsed_time)
-    print ("Execution_time: {0}".format(elapsed_time) + "[sec]")
+    print("Number of discriminatory data per second: " \
+          + str((len(global_disc_inputs_list) + len(local_disc_inputs_list)) / elapsed_time))
+    print("Execution_time: {0}".format(elapsed_time) + "[sec]")
 
     with open("result/" + algorithm + "/" + dataset + "_" + classifier + "_" + str(N) + ".txt", "a") as myfile:
         myfile.write(str(len(tot_inputs)) + " "
@@ -764,7 +764,7 @@ elif algorithm == "CGFT":
                      + "\n"
                      )
 
-    print "Search ended"
+    print("Search ended")
 
 # RSUTT algorithm
 
@@ -860,7 +860,7 @@ elif algorithm == "RSUTT":
                         local_cnt += 1
 
 
-        print "Search started"
+        print("Search started")
         starting_time = time.time()
         minimizer = {"method": "L-BFGS-B"}
 
@@ -911,7 +911,7 @@ elif algorithm == "RSUTT":
                 # Obtain all test cases from
                 test_suite_CT_Extra, _, _, _ = train_test_split(test_suite_base, [0] * len(test_suite_base),
                                                                 test_size=len(test_suite_base) - int(number_of_inputs))
-                print len(test_suite_CT_Extra)
+                print(len(test_suite_CT_Extra))
                 return test_suite_CT_Extra
 
             # Case 2: combine two test suites
@@ -1035,5 +1035,5 @@ elif algorithm == "RSUTT":
         print("Pairwise distance ({:.6f}) saved to: {}".format(pairwisedistance, pairwise_file))
 
 else:
-    print "The algorithm name is wrong."
+    print("The algorithm name is wrong.")
 
