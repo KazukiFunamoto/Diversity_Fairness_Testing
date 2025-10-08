@@ -7,12 +7,9 @@ This repository supports the paper:
 **_"Is Diversity a Meaningful Metric in Fairness Testing?"_** 
 (*Accepted to and Presented at the [ACM/IEEE International Symposium on Empirical Software Engineering and Measurement (ESEM 2025)](https://conf.researchr.org/home/esem-2025), Technical Track*)
 
-
 Kazuki Funamoto (船本 和希) – Keio University  
 Takashi Kitamura (北村 崇師) – National Institute of Advanced Industrial Science and Technology (AIST)  
 Shingo Takada (高田 眞吾) – Keio University  
- 
-<!-- To appear in the *Proceedings of the International Symposium on Empirical Software Engineering and Measurement (ESEM 2025)*, IEEE/ACM, 2025. -->
 
 ## About this repository
 
